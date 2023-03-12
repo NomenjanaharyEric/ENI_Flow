@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { ProfileModule } from './profile/profile.module';
 import { PostModule } from './post/post.module';
 import { CommentModule } from './comment/comment.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -15,7 +16,8 @@ import { CommentModule } from './comment/comment.module';
     AuthModule,
     ProfileModule,
     PostModule,
-    CommentModule
+    CommentModule,
+    UserModule
   ],
 })
 export class AppModule {}
