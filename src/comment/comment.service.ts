@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { Comment } from "@prisma/client";
-import { CommentDto } from "./dto";
+import { AnswerDto, CommentDto } from "./dto";
 
 @Injectable()
 export class CommentService{
@@ -23,6 +23,25 @@ export class CommentService{
             }
         });
         return comment;
+    }
+
+    async answer(answerDto: AnswerDto)
+    {
+        const answer = await this.prisma.comment.create({
+            data:{
+                content: answerDto.comment,
+                author: {
+                    connect: { id: answerDto.authorId}
+                },
+                parent: {
+                    connect: { id: answerDto.commentId }
+                },
+                post: {
+                    connect: { id: answerDto.postId }
+                }
+            }
+        });
+        return answer;
     }
 
     async findAll() : Promise<Comment[]>

@@ -1,6 +1,6 @@
 import { Controller, Get, Post,Patch,Delete,Body, Param, ParseIntPipe } from "@nestjs/common";
 import { CommentService } from "./comment.service";
-import { CommentDto } from "./dto";
+import { AnswerDto, CommentDto } from "./dto";
 
 @Controller("comments")
 export class CommentController{
@@ -10,6 +10,11 @@ export class CommentController{
     @Post()
     create(@Body() commentDto: CommentDto){
         return this.commentService.create(commentDto);
+    }
+
+    @Post('/answer')
+    answer(@Body() answerDto: AnswerDto){
+        return this.commentService.answer(answerDto);
     }
 
     @Get()
