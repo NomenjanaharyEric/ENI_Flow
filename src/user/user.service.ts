@@ -3,7 +3,7 @@ import { ForbiddenException, NotFoundException } from '@nestjs/common/exceptions
 import { User } from '@prisma/client';
 import * as argon from "argon2";
 import { PrismaService } from 'src/prisma/prisma.service';
-import { PasswordDto, UserDto } from './dto';
+import { FollowUserDto, PasswordDto, UserDto } from './dto';
 
 @Injectable()
 export class UserService {
@@ -12,7 +12,11 @@ export class UserService {
 
     private async findById(id: number): Promise<User>
     {
-        const user = await this.prisma.user.findUnique({ where: {id} });
+        const user = await this.prisma.user.findUnique({ 
+            where: { id },
+            include: { followers: true, followings: true } 
+        });
+        
         
         if(!user){
             throw new NotFoundException("Unable to find User By This ID");
@@ -26,8 +30,9 @@ export class UserService {
         const isPasswordMatches = await argon.verify(hash,password);
         
         if(!isPasswordMatches){
-            throw new ForbiddenException("Invalid Credentials");
+            throw new ForbiddenException('Invalid Credential');
         }
+        
         return isPasswordMatches;
     }
 
@@ -42,8 +47,33 @@ export class UserService {
         return this.findById(id);
     }
 
+    async followUser(followUserDto: FollowUserDto){
+        const follow = await this.prisma.user.update({
+            where: { id: followUserDto.userToFollow },
+            data: {
+                followers: {
+                    connect: { id: followUserDto.currentUser }
+                }
+            }
+        })
+        return follow;
+    }
+
+    async unFollowUser(followUserDto: FollowUserDto){
+        const unfollow = await this.prisma.user.update({
+            where: { id: followUserDto.userToFollow },
+            data: {
+                followers: {
+                    disconnect: { id: followUserDto.currentUser }
+                }
+            }
+        })
+        return unfollow;
+    }
+
     async update(id: number, userDto: UserDto): Promise<User>
     {
+        
         const user = await this.findById(id);
 
         await this.verifyPassword(user.password, userDto.password);

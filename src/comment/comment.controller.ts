@@ -8,8 +8,8 @@ export class CommentController{
     constructor(private commentService: CommentService){}
 
     @Post()
-    create(@Body() comment: CommentDto){
-        return this.commentService.create(comment);
+    create(@Body() commentDto: CommentDto){
+        return this.commentService.create(commentDto);
     }
 
     @Get()
@@ -22,7 +22,7 @@ export class CommentController{
         return this.commentService.findOne(id);
     }
 
-    @Get('/:postId')
+    @Get('/post/:postId')
     findByPost(@Param('postId', ParseIntPipe) postId: number){
         return this.commentService.findByPost(postId);
     }

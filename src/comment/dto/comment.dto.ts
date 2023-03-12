@@ -1,11 +1,8 @@
-import { IsEmail, IsString, IsNotEmpty, IsNumberString } from "class-validator";
+import { IsEmail, IsString, IsNotEmpty } from "class-validator";
 
 export class CommentDto {
-
-    @IsNumberString()
-    id: number;
     
-    @IsNumberString()
+    @IsNotEmpty()
     postId: number;
 
     @IsString()
