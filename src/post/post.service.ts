@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Post } from "@prisma/client";
-import { PostDto, UpdatePostDto } from './dto';
+import { Dislike, Like, Post } from "@prisma/client";
+import { LikeDto, PostDto, UpdatePostDto } from './dto';
 
 @Injectable()
 export class PostService {
@@ -33,6 +33,28 @@ export class PostService {
             }
         });
         return post;
+    }
+
+    async like(likeDto: LikeDto): Promise<Like>
+    {
+        const like = await this.prisma.like.create({
+            data: {
+                userId: likeDto.userId,
+                postId: likeDto.postId
+            }
+        });
+        return like;
+    }
+
+    async dislike(likeDto: LikeDto): Promise<Dislike>
+    {
+        const dislike = await this.prisma.dislike.create({
+            data: {
+                userId: likeDto.userId,
+                postId: likeDto.postId
+            }
+        });
+        return dislike;
     }
 
     async update(id: number, updatePost: UpdatePostDto): Promise<Post>
